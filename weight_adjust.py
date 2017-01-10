@@ -72,14 +72,14 @@ def is_wrong_unit(bodyweight, training_duration, sex, exercises):
     # first, filter for world records
     for exercise in exercises:
         if exercise['type'] == 'squat':
-            if sex == 2 and exercise['value'] > womens_squat_world_record: return True
-            if sex == 1 and exercise['value'] > mens_squat_world_record: return True
+            if sex == 'f' and exercise['value'] >= womens_squat_world_record: return True
+            if sex == 'm' and exercise['value'] >= mens_squat_world_record: return True
         if exercise['type'] == 'bench':
-            if sex == 2 and exercise['value'] > womens_bench_world_record: return True
-            if sex == 1 and exercise['value'] > mens_bench_world_record: return True
+            if sex == 'f' and exercise['value'] >= womens_bench_world_record: return True
+            if sex == 'm' and exercise['value'] >= mens_bench_world_record: return True
         if exercise['type'] == 'deadlift':
-            if sex == 2 and exercise['value'] > womens_deadlift_world_record: return True
-            if sex == 1 and exercise['value'] > mens_deadlift_world_record: return True
+            if sex == 'f' and exercise['value'] >= womens_deadlift_world_record: return True
+            if sex == 'm' and exercise['value'] >= mens_deadlift_world_record: return True
 
     if training_duration < 5: # if training for less than 2 years
         for idx, exercise in enumerate(exercises):
@@ -88,6 +88,18 @@ def is_wrong_unit(bodyweight, training_duration, sex, exercises):
             if exercise['type'] == 'bench' and exercise['allometric_scale'] > bench_cutoff: return True
             if exercise['type'] == 'deadlift' and exercise['allometric_scale'] > deadlift_cutoff: return True
             if exercise['type'] == 'total' and exercise['allometric_scale'] > total_cutoff: return True
+
+    return False
+
+# some tests
+assert_list = [{'type':'squat', 'value':278}]
+assert_bodyweight = 99
+assert is_wrong_unit(assert_bodyweight, 5, 'f', assert_list) == True
+assert is_wrong_unit(assert_bodyweight, 4, 'm', assert_list) == False
+assert_bodyweight = 60
+assert is_wrong_unit(assert_bodyweight, 5, 'm', assert_list) == False
+assert is_wrong_unit(assert_bodyweight, 4, 'm', assert_list) == True
+
 
 changed_entries = []
 
@@ -101,7 +113,7 @@ for idx, entry in enumerate(entries):
             exercises[exercise_idx]['value'] = float(entry[exercise['column']])
         except:
             exercises[exercise_idx]['value'] = 1
-    #print(idx, entry[bodyweight_column])
+
     try:
         bodyweight = float(entry[bodyweight_column])
     except:
