@@ -94,10 +94,14 @@ def is_wrong_unit(bodyweight, training_duration, sex, exercises):
 # some tests
 assert_list = [{'type':'squat', 'value':278}]
 assert_bodyweight = 99
+# Training more than 2 years, above WR
 assert is_wrong_unit(assert_bodyweight, 5, 'f', assert_list) == True
+# Training less than 2 years, below WR, but below allometric scaled strength
 assert is_wrong_unit(assert_bodyweight, 4, 'm', assert_list) == False
 assert_bodyweight = 60
+# Training more than 2 years, below WR, above allometric scaled strength
 assert is_wrong_unit(assert_bodyweight, 5, 'm', assert_list) == False
+# Training less than 2 years, below WR, above allometric scaled strength
 assert is_wrong_unit(assert_bodyweight, 4, 'm', assert_list) == True
 
 
@@ -127,7 +131,7 @@ for idx, entry in enumerate(entries):
                 entries[idx][exercise['column']] = convert_to_kg(exercise['value'])
                 if not idx + 2 in changed_entries: changed_entries.append(idx + 2)
 
-print(changed_entries)
+print(len(changed_entries), changed_entries)
 #print(entries[4])
 # Write entries to file
 with open('survey_adjusted.csv', 'w') as f:
