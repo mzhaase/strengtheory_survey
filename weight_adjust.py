@@ -9,9 +9,11 @@
 #
 # Written for Strengtheory.com
 # Copyright Mattis Haase 2017
-import csv
+import time
 
 import numpy as np
+
+start_time = time.time()
 
 # Constants
 kg_to_lbs                    = 2.2045
@@ -131,10 +133,12 @@ for idx, entry in enumerate(entries):
                 entries[idx][exercise['column']] = convert_to_kg(exercise['value'])
                 if not idx + 2 in changed_entries: changed_entries.append(idx + 2)
 
-print(len(changed_entries), changed_entries)
+print('Number of changed entries: ' + str(len(changed_entries)) + '\nChanged entries:\n' + str(changed_entries))
 #print(entries[4])
 # Write entries to file
 with open('survey_adjusted.csv', 'w') as f:
     f.write(header)
     for entry in entries:
         f.write(','.join(entry).replace("'",""))
+
+print('Runtime: ' + str(time.time()-start_time))
